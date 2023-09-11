@@ -5,17 +5,18 @@
  * 按结束时间排序，可以保证我们优先考虑加入先结束的课程。 在课程塞满的时候，用当前的(如果耗时更短)替换耗时最长的那一个(所以使用优先队列维护时长)
  */
 var scheduleCourse = function (courses) {
-    courses.sort((a, b) => a[1] - b[1]) //从小到大排序
-    const pq = new MaxPriorityQueue()
-    let day = 0
+    courses.sort((a, b) => a[1] - b[1]); // 按照 lastDay 从小到大排序
+    const pq = new MaxPriorityQueue();
+    let day = 0; // 已消耗时间
     for (const [duration, lastDay] of courses) {
-        if (day + duration < lastDay) { // 没有超过 lastDay
-            day += duration
-            pq.enqueue(duration)
+        if (day + duration <= lastDay) { // 没有超过 lastDay
+            day += duration;
+            pq.enqueue(duration);
         } else if (!pq.isEmpty() && duration < pq.front().element) { // 该课程的时间比之前的最长时间要短
-            day -= pq.dequeue.element - duration
-            pq.enqueue(duration)
+            // 反悔
+            day -= pq.dequeue().element - duration;
+            pq.enqueue(duration);
         }
     }
-    return pq.size()
+    return pq.size();
 };
